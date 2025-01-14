@@ -2,6 +2,16 @@
 -- NOTE: need more advanced SQL to answer this question without
 --       raising a warning: "Field of aggregated query neither grouped nor aggregated"
 
+SELECT 
+    (SELECT player_id, home_runs
+    FROM stats INNER JOIN players on players.id = stats.player_id
+    INNER JOIN teams on stats.team_id = teams.id
+    WHERE year == 2019
+    GROUP BY player_id
+
+;
+
+
 -- Expected result:
 --
 -- +-------------------------------+------------+-------------+----------------------+
