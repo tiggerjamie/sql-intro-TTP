@@ -2,12 +2,21 @@
 -- NOTE: need more advanced SQL to answer this question without
 --       raising a warning: "Field of aggregated query neither grouped nor aggregated"
 
-    SELECT name, max(home_runs)
-    FROM stats INNER JOIN players on players.id = stats.player_id
+WITH homerunplayers AS (
+    SELECT first_name, last_name, home_runs, name
+    FROM stats INNER JOIN players ON players.id = stats.player_id
     INNER JOIN teams on stats.team_id = teams.id
-    WHERE year == 2019
-    GROUP BY name;
+    WHERE year == 2019),
 
+homerunteams AS (
+    SELECT teams.name, max(stats.home_runs) AS max_home_runs
+    FROM stats INNER JOIN teams on stats.team_id = teams.id
+    WHERE year == 2019
+    GROUP BY teams.name)
+
+SELECT homerunplayers.name, first_name, last_name, homerunplayers.home_runs
+FROM homerunteams INNER JOIN homerunplayers ON  home_runs = max_home_runs AND homerunplayers.name = homerunteams.name
+ORDER BY homerunplayers.name;
 
 
 -- Expected result:
